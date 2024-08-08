@@ -155,7 +155,7 @@ class Blog(Container):
     # using a shared state
     _dict = {}
 
-    def __init__(self, app):
+    def __init__(self, app) -> None:
         self.__dict__ = self._dict
         if not self._dict:
             self._init(app)
@@ -225,10 +225,10 @@ class Blog(Container):
     def __getitem__(self, key):
         return self.posts[key] or self.drafts[key]
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         return item in self.posts or item in self.drafts
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.posts)
 
     def __nonzero__(self):
@@ -323,10 +323,10 @@ def html_builder_write_doc(self, docname, doctree, img_url=False):
 
 
 class BlogPageMixin:
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self) + " <" + str(self.docname) + ">"
 
     @property
@@ -346,7 +346,7 @@ class Post(BlogPageMixin):
     Handle post metadata.
     """
 
-    def __init__(self, blog, docname, info):
+    def __init__(self, blog, docname, info) -> None:
         self._blog = blog
         self.docname = docname
         self.section = info["section"]
@@ -403,7 +403,6 @@ class Post(BlogPageMixin):
         `img_url` enables conversion of `<img>` source paths to fully
         qualified URLs based on `blog_baseurl`.
         """
-
         doctree = new_document("")
         if fulltext:
             deepcopy = self.doctree.deepcopy()
@@ -465,7 +464,7 @@ class Catalog(BlogPageMixin):
     Handles collections of posts.
     """
 
-    def __init__(self, blog, name, xref, path, reverse=False):
+    def __init__(self, blog, name, xref, path, reverse=False) -> None:
         self._blog = blog
         self.name = name
         self.xref = xref  # for creating labels, e.g. `tag-python`
@@ -478,7 +477,7 @@ class Catalog(BlogPageMixin):
         self._min_max = None
         self._reverse = reverse
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
     def __getitem__(self, name):
@@ -487,10 +486,10 @@ class Catalog(BlogPageMixin):
         except KeyError:
             return self.collections.setdefault(name, Collection(self, name))
 
-    def __setitem__(self, name, item):
+    def __setitem__(self, name, item) -> None:
         self.collections[name] = item
 
-    def __len__(self):
+    def __len__(self) -> int:
         return sum(len(coll) for coll in self)
 
     def __nonzero__(self):
@@ -530,7 +529,7 @@ class Collection(BlogPageMixin):
     Posts sharing a label, i.e. tag, category, author, or location.
     """
 
-    def __init__(self, catalog, label, name=None, href=None, path=None, page=0):
+    def __init__(self, catalog, label, name=None, href=None, path=None, page=0) -> None:
         self._catalog = catalog
         self._blog = catalog.blog
         self.label = label
@@ -545,10 +544,10 @@ class Collection(BlogPageMixin):
         self._html = None
         self._catalog.blog.references[self.xref] = (self.docname, self.name)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._posts)
 
     def __nonzero__(self):
@@ -567,7 +566,7 @@ class Collection(BlogPageMixin):
     def __getitem__(self, key):
         return self._posts.get(key)
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         return item in self._posts
 
     def __eq__(self, other):

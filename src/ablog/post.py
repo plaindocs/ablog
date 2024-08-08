@@ -211,7 +211,6 @@ def purge_posts(app, env, docname):
     Remove post and reference to it from the standard domain when its document
     is removed or changed.
     """
-
     if hasattr(env, "ablog_posts"):
         env.ablog_posts.pop(docname, None)
     filename = os.path.split(docname)[1]
@@ -417,11 +416,10 @@ def process_posts(app, doctree):
         #  so that references are created and no warnings are issued
         if app.builder.format == "html":
             stdlabel = env.domains["std"].data["labels"]
-        else:
-            if hasattr(env, "intersphinx_inventory"):
-                stdlabel = env.intersphinx_inventory.setdefault("std:label", {})  # NOQA
-                baseurl = getattr(env.config, "blog_baseurl").rstrip("/") + "/"  # NOQA
-                project, version = env.config.project, str(env.config.version)  # NOQA
+        elif hasattr(env, "intersphinx_inventory"):
+            stdlabel = env.intersphinx_inventory.setdefault("std:label", {})  # NOQA
+            baseurl = getattr(env.config, "blog_baseurl").rstrip("/") + "/"  # NOQA
+            project, version = env.config.project, str(env.config.version)  # NOQA
         for key in ["tags", "author", "category", "location", "language"]:
             catalog = blog.catalogs[key]
             for label in postinfo[key]:

@@ -1,9 +1,8 @@
-import re
+import datetime
 from pathlib import Path
 
 import ablog
 from packaging.version import parse as _parse
-from sphinx import addnodes
 
 ablog_builder = "dirhtml"
 ablog_website = "_website"
@@ -15,6 +14,7 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.extlinks",
     "sphinx_automodapi.automodapi",
+    "sphinx_toolbox",
     "ablog",
     "nbsphinx",
     "myst_parser",
@@ -22,7 +22,8 @@ extensions = [
 
 version = str(_parse(ablog.__version__))
 project = "ABlog"
-copyright = "2014-2022, ABlog Team"  # NOQA: A001
+current_year = datetime.datetime.now().year
+copyright = f"2014-{current_year}, ABlog Team"  # NOQA: A001
 master_doc = "index"
 source_suffix = {
     ".rst": "restructuredtext",
@@ -65,10 +66,10 @@ blog_feed_templates = {
 }
 disqus_shortname = "https-ablog-readthedocs-io"
 disqus_pages = True
-fontawesome_link_cdn = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+fontawesome_link_cdn = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 html_theme = "sunpy"
 html_sidebars = {
-    "**": [
+    "*": [
         "ablog/postcard.html",
         "ablog/recentposts.html",
         "ablog/tagcloud.html",
@@ -79,6 +80,8 @@ html_sidebars = {
         "ablog/locations.html",
     ],
 }
+github_username = "sunpy"
+github_repository = "ablog"
 intersphinx_mapping = {
     "python": ("https://docs.python.org/", None),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
@@ -106,34 +109,3 @@ for line in open("nitpick-exceptions"):
     dtype, target = line.split(None, 1)
     target = target.strip()
     nitpick_ignore.append((dtype, target))
-
-
-def parse_event(env, sig, signode):
-    event_sig_re = re.compile(r"([a-zA-Z-]+)\s*\((.*)\)")
-    m = event_sig_re.match(sig)
-    if not m:
-        signode += addnodes.desc_name(sig, sig)
-        return sig
-    name, args = m.groups()
-    signode += addnodes.desc_name(name, name)
-    plist = addnodes.desc_parameterlist()
-    for arg in args.split(","):
-        arg = arg.strip()
-        plist += addnodes.desc_parameter(arg, arg)
-    signode += plist
-    return name
-
-
-def setup(app):
-    from sphinx.ext.autodoc import cut_lines
-    from sphinx.util.docfields import GroupedField
-
-    app.connect("autodoc-process-docstring", cut_lines(4, what=["module"]))
-    app.add_object_type(
-        "confval",
-        "confval",
-        objname="configuration value",
-        indextemplate="pair: %s; configuration value",
-    )
-    fdesc = GroupedField("parameter", label="Parameters", names=["param"], can_collapse=True)
-    app.add_object_type("event", "event", "pair: %s; event", parse_event, doc_field_types=[fdesc])

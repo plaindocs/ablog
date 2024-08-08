@@ -74,7 +74,7 @@ jobs:
             - pandoc
             - graphviz
       envs: |
-        - linux: py312-docs
+        - linux: py312-build_docs
         - linux: pydata-sphinx-theme-dev
         - linux: py312-linkcheck
 

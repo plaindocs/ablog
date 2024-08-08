@@ -51,13 +51,15 @@ notebook = [
 markdown = ["myst-parser>=0.17.0"]
 docs = [
   "sunpy-sphinx-theme",
-  "sphinx-automodapi"
+  "sphinx-automodapi",
+  "sphinx-toolbox",
 ]
 tests = [
   "defusedxml>=0.8.0rc2",
   "pytest-cov",
   "pytest",
 ]
+dev = ["ablog[all,docs,tests]"]
 
 [project.urls]
 changelog = "https://ablog.readthedocs.io/en/stable/blog/category/release.html"

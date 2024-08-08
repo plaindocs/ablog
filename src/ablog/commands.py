@@ -294,11 +294,10 @@ def ablog_serve(website=None, port=8000, view=True, rebuild=False, patterns="*.r
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
+    elif view:
+        webbrowser.open_new_tab(f"http://127.0.0.1:{port}") and httpd.serve_forever()
     else:
-        if view:
-            webbrowser.open_new_tab(f"http://127.0.0.1:{port}") and httpd.serve_forever()
-        else:
-            httpd.serve_forever()
+        httpd.serve_forever()
 
 
 @arg("-t", dest="title", type=str, help="post title; default is formed from filename")
